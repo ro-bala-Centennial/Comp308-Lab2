@@ -6,7 +6,10 @@ import {
   DROP_COURSE,
   UPDATE_COURSE,
 } from "../graphql/operations";
-import { Container, Table, Button } from "react-bootstrap";
+
+import { Container, Table, Button, Alert } from "react-bootstrap";
+
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const { data: allCourses } = useQuery(GET_COURSES);
@@ -44,40 +47,61 @@ export default function Dashboard() {
 
   return (
     <Container style={{ marginTop: 40 }}>
-      <h3>Dashboard</h3>
+
+      {/* PAGE TITLE */}
+      <h2>Student Dashboard</h2>
+
+      {/* PAGE DESCRIPTION */}
+      <Alert variant="info">
+        This page allows you to view all available courses, enroll in courses,
+        update course sections, and drop courses you are currently enrolled in.
+      </Alert>
 
       <Button variant="secondary" className="mb-4" onClick={logout}>
         Logout
       </Button>
 
-      <h5>All Courses</h5>
-      <Table bordered>
+      {/* ALL COURSES */}
+      <h4>Available Courses (Click Add to enroll)</h4>
+
+      <Table bordered striped>
         <thead>
           <tr>
             <th>Code</th>
             <th>Name</th>
             <th>Section</th>
-            <th>Action</th>
+            <th>Semester</th>
+            <th>Add Course</th>
           </tr>
         </thead>
+
         <tbody>
           {allCourses?.courses.map((c) => (
             <tr key={c.id}>
               <td>{c.code}</td>
               <td>{c.name}</td>
               <td>{c.section}</td>
+              <td>{c.semester}</td>
+
               <td>
-                <Button size="sm" onClick={() => handleAdd(c.id)}>
-                  Add
+                <Button
+                  variant="success"
+                  size="sm"
+                  onClick={() => handleAdd(c.id)}
+                >
+                  Add Course
                 </Button>
               </td>
+
             </tr>
           ))}
         </tbody>
       </Table>
 
-      <h5>My Courses</h5>
-      <Table bordered>
+      {/* MY COURSES */}
+      <h4 className="mt-5">My Enrolled Courses</h4>
+
+      <Table bordered striped>
         <thead>
           <tr>
             <th>Code</th>
@@ -86,27 +110,41 @@ export default function Dashboard() {
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody>
           {myCourses?.myCourses.map((c) => (
             <tr key={c.id}>
+
               <td>{c.code}</td>
               <td>{c.name}</td>
               <td>{c.section}</td>
+
               <td>
-                <Button size="sm" className="me-2"
-                  onClick={() => handleUpdate(c.id)}>
-                  Update
+
+                <Button
+                  variant="warning"
+                  size="sm"
+                  className="me-2"
+                  onClick={() => handleUpdate(c.id)}
+                >
+                  Update Section
                 </Button>
 
-                <Button size="sm" variant="danger"
-                  onClick={() => handleDrop(c.id)}>
-                  Drop
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => handleDrop(c.id)}
+                >
+                  Drop Course
                 </Button>
+
               </td>
+
             </tr>
           ))}
         </tbody>
       </Table>
+
     </Container>
   );
 }
